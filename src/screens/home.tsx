@@ -1,29 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
-import { Text, View, SafeAreaView, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { Text, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 
-import { Ionicons } from '@expo/vector-icons';
+import { TaskList } from '../components/TaskList';
+import { TasksContext } from '../context/TasksContext';
 
-interface Task {
-  id: string;
-  title: string;
-}
 
 export function Home() {
   const [newTask, setNewTask]     = useState<string>()
-  const [tasksList, setTasksList] = useState<Task[]>([])
-  const [count, setCount] = useState<number>(1)
 
-  
+  const { addTask } = useContext(TasksContext)
 
   function handleAddTasks() {
     const task = {
-      id: `${/*new Date().getTime()*/ count}`, 
+      id: `${new Date().getTime()}`, 
       title: newTask ? newTask : 'Tarefa vazia'
     }
 
-    setTasksList([...tasksList, task])
-    setCount(count + 1)
+    addTask(task);
   }
 
   useEffect(() => {
@@ -31,8 +25,8 @@ export function Home() {
   }, [newTask])
 
   return (
-    <SafeAreaView className='flex-1 bg-black'>
-      <View className="flex-1 bg-black px-8 py-12">
+    <SafeAreaView className='flex-1 bg-black-1100'>
+      <View className="flex-1 bg-semi-blacky px-8 py-12">
         
         <Text className="text-blue-300 text-2xl font-bold">Hellow World!</Text>
         <TextInput 
@@ -52,26 +46,9 @@ export function Home() {
         <Text className="text-blue-300 mt-8 text-2xl font-bold">Minhas Tarefas!</Text>
 
 
-        <FlatList 
-          className='bg-blue-1000 w-max p-1 pt-2 mt-6 rounded-lg first:rounded-md'
-          data={tasksList} 
-          ListEmptyComponent={<Text className='mx-auto pt-3 justify-center items-center text-sky-800 text-2xl'>Nenhuma tarefa cadastrada...</Text>}
-          renderItem={({item}) => 
-            <>
-              <TouchableOpacity className='flex-row items-center justify-between'>
-                <Text className=' text-white  mx-3 px-2 py-3 text-2xl'>
-                  {item.title} 
-                </Text>
-                
-                <View className='mr-4'>
-                  <Ionicons name="md-trash" size={24} color="#67a4e0"/>
-                </View>
-              </TouchableOpacity>
-              <View className='w-11/12 mx-auto h-0.5 bg-blue-900 '></View>
-            </>
-          }
-          keyExtractor={item => item.id}
-        />
+        <TaskList />
+
+        
       </View>
     </SafeAreaView>
   );
