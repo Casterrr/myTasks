@@ -4,7 +4,6 @@ import { TasksProviderComponent } from './src/context/TasksContext';
 import { Home } from './src/screens/home';
 
 export default function App() {
-  console.log('opaaa')
 
   return (
     <TasksProviderComponent>

@@ -1,14 +1,27 @@
 import { useContext } from "react";
 
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 
 import { Ionicons } from '@expo/vector-icons';
-import { ITask, TasksContext } from "../context/TasksContext";
+import { ITask, useTaskList } from "../context/TasksContext";
 
 
 
 export function TaskList() {
-    const { tasksList } = useContext(TasksContext)
+    const { tasksList, removeTask } = useTaskList()
+
+    function handleRemoveTask(id: string) {
+      Alert.alert('Tem certeza?', 'Deseja realmente excluir a tarefa?', [
+        {
+          text: 'Cancelar',
+          onPress: () => {}
+        },
+        {
+          text: 'Excluir',
+          onPress: () => removeTask(id)
+        }
+      ]);
+    }
 
     return (
         <FlatList 
@@ -22,9 +35,9 @@ export function TaskList() {
                   {item.title} 
                 </Text>
                 
-                <View className='mr-4'>
+                <TouchableOpacity className='mr-4' onPress={() => handleRemoveTask(item.id)}>
                   <Ionicons name="md-trash" size={24} color="#67a4e0"/>
-                </View>
+                </TouchableOpacity>
               </TouchableOpacity>
               <View className='w-11/12 mx-auto h-0.5 bg-blue-900 '></View>
             </>

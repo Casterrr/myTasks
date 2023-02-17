@@ -14,6 +14,7 @@ export interface ITask {
 export interface ITasksContext {
     tasksList: ITask[]
     addTask(task: ITask): void;
+    removeTask(id: string): void;
 }
 
 const tasksData = '@MyTasksLucas126:Tasks'
@@ -50,9 +51,29 @@ export const TasksProviderComponent: React.FunctionComponent<IProps> = ({ childr
         }
     };
 
+    const removeTask = async (id: string) => {
+        // o filter percore a lista e retorna todos os itens que obedecem a condição.
+        const newTaskList = tasksList.filter(task => task.id !== id);
+        setTasksList(newTaskList);
+
+        await AsyncStorage.setItem(tasksData, JSON.stringify(newTaskList));
+    }
+
     return (
-        <TasksContext.Provider value={ { tasksList, addTask } }>
+        <TasksContext.Provider value={ { tasksList, addTask, removeTask } }>
             {children}
         </TasksContext.Provider>
     );
+};
+
+
+export function useTaskList(): ITasksContext {
+    //se esse hook for chamado em um componente que não é filho do provider desse contexto, a linha abaixo não vai funcionar.
+    const context  =  React.useContext(TasksContext);
+
+    if (!context) {
+        throw new Error('useTaskList deve ser usado em um TasksProvider');
+    }
+
+    return context;
 }

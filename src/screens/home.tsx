@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from 'react';
 
-import { Text, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, SafeAreaView, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 
 import { TaskList } from '../components/TaskList';
-import { TasksContext } from '../context/TasksContext';
+import { useTaskList } from '../context/TasksContext';
 
 
 export function Home() {
-  const [newTask, setNewTask]     = useState<string>()
+  const [newTask, setNewTask] = useState<string>()
 
-  const { addTask } = useContext(TasksContext)
+  const { addTask } = useTaskList()
 
   function handleAddTasks() {
     const task = {
@@ -18,11 +18,11 @@ export function Home() {
     }
 
     addTask(task);
-  }
 
-  useEffect(() => {
-    console.log(newTask)
-  }, [newTask])
+    setNewTask(undefined)
+
+    Keyboard.dismiss()
+  }
 
   return (
     <SafeAreaView className='flex-1 bg-black-1100'>
@@ -33,12 +33,14 @@ export function Home() {
           className="p-4 w-max h-16 bg-blue-1000 text-white text-2xl rounded-md mt-8 border-0 focus:border-blue-400 focus:border-2" 
           placeholder='Digite algo...' placeholderTextColor="#637fab" 
           onChangeText={setNewTask}
+          value={newTask}
         />
         
         <TouchableOpacity 
           className="bg-blue-300 justify-center items-center  w-max h-16 rounded-lg mt-4" 
           activeOpacity={0.75}
           onPress={handleAddTasks}
+          
         >
           <Text className='font-semibold text-2xl'>Enviar</Text>
         </TouchableOpacity>
